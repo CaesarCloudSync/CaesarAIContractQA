@@ -1,3 +1,5 @@
+# FYI This deployement will take about 40 minutes without any logs.
+# Due to sentence-transformers - |torch| nvidiacu11 other nvidia etc.
 # Use the official Python 3.9 image
 #FROM python:3.9
 FROM ubuntu:latest
@@ -35,7 +37,8 @@ COPY ./environment.yml /code/environment.yml
  
 # Install requirements.txt 
 RUN conda env create -f /code/environment.yml
-RUN conda activate caesaraicontractqa
+RUN conda init bash
+#RUN conda activate caesaraicontractqa
 
 # Set up a new user named "user" with user ID 1000
 RUN useradd -m -u 1000 user
@@ -50,8 +53,9 @@ WORKDIR $HOME/app
 
 # Copy the current directory contents into the container at $HOME/app setting the owner to the user
 COPY --chown=user . $HOME/app
-
+EXPOSE 8080
+CMD /opt/conda/envs/caesaraicontractqa/bin/python ~/app/main.py
 # Local
 #CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860","--reload"] 
 # Fly.io
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080","--reload"] 
+#CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080","--reload"] 
